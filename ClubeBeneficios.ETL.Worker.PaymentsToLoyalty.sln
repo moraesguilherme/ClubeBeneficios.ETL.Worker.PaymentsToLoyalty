@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{80E33292-85B4-42C7-843A-02B31E394746}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClubeBeneficios.ETL.Worker.PaymentsToLoyalty", "src\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.csproj", "{9B2F2A70-5441-4825-98FA-77230C39B42F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application", "src\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application.csproj", "{63FB834F-8401-4850-92F4-C022CF560B2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Domain", "src\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Domain\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Domain.csproj", "{39FD0F40-122D-458F-833F-6316561A7090}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure", "src\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure\ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.csproj", "{B5945ABD-213D-45BC-9CAD-56E7F88915DC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B2F2A70-5441-4825-98FA-77230C39B42F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B2F2A70-5441-4825-98FA-77230C39B42F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B2F2A70-5441-4825-98FA-77230C39B42F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B2F2A70-5441-4825-98FA-77230C39B42F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63FB834F-8401-4850-92F4-C022CF560B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63FB834F-8401-4850-92F4-C022CF560B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63FB834F-8401-4850-92F4-C022CF560B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63FB834F-8401-4850-92F4-C022CF560B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39FD0F40-122D-458F-833F-6316561A7090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39FD0F40-122D-458F-833F-6316561A7090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39FD0F40-122D-458F-833F-6316561A7090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39FD0F40-122D-458F-833F-6316561A7090}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5945ABD-213D-45BC-9CAD-56E7F88915DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5945ABD-213D-45BC-9CAD-56E7F88915DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5945ABD-213D-45BC-9CAD-56E7F88915DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5945ABD-213D-45BC-9CAD-56E7F88915DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B2F2A70-5441-4825-98FA-77230C39B42F} = {80E33292-85B4-42C7-843A-02B31E394746}
+		{63FB834F-8401-4850-92F4-C022CF560B2B} = {80E33292-85B4-42C7-843A-02B31E394746}
+		{39FD0F40-122D-458F-833F-6316561A7090} = {80E33292-85B4-42C7-843A-02B31E394746}
+		{B5945ABD-213D-45BC-9CAD-56E7F88915DC} = {80E33292-85B4-42C7-843A-02B31E394746}
+	EndGlobalSection
+EndGlobal
