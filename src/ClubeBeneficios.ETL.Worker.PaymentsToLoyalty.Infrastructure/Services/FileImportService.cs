@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application.Interfaces;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.Configuration;
-using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.FileReaders;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,20 +12,17 @@ public class FileImportService : IFileImportService
     private readonly IEtlBatchRepository _batchRepository;
     private readonly IEtlRowRepository _rowRepository;
     private readonly EtlWorkerOptions _options;
-    private readonly IReadOnlyCollection<IRawFileReader> _readers;
 
     public FileImportService(
         ILogger<FileImportService> logger,
         IEtlBatchRepository batchRepository,
         IEtlRowRepository rowRepository,
-        IOptions<EtlWorkerOptions> options,
-        IEnumerable<IRawFileReader> readers)
+        IOptions<EtlWorkerOptions> options)
     {
         _logger = logger;
         _batchRepository = batchRepository;
         _rowRepository = rowRepository;
         _options = options.Value;
-        _readers = readers.ToList();
     }
 
     public async Task<int> ImportPendingFilesAsync(CancellationToken cancellationToken)
@@ -37,26 +33,23 @@ public class FileImportService : IFileImportService
             return 0;
         }
 
-        var files = Directory
-            .GetFiles(_options.WatchFolderPath, "*.*", SearchOption.TopDirectoryOnly)
-            .Where(f =>
-                f.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ||
-                f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+        var files = Directory.GetFiles(_options.WatchFolderPath, "*.*", SearchOption.TopDirectoryOnly)
+            .Where(f => f.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
             .OrderBy(f => f)
             .ToList();
 
-        var importedCount = 0;
+        var imported = 0;
 
         foreach (var file in files)
         {
             var batchId = await ImportFileAsync(file, cancellationToken);
             if (batchId.HasValue)
             {
-                importedCount++;
+                imported++;
             }
         }
 
-        return importedCount;
+        return imported;
     }
 
     public async Task<Guid?> ImportFileAsync(string filePath, CancellationToken cancellationToken)
@@ -67,40 +60,34 @@ public class FileImportService : IFileImportService
             return null;
         }
 
-        var reader = _readers.FirstOrDefault(r => r.CanRead(filePath));
-        if (reader is null)
-        {
-            _logger.LogWarning("Nenhum leitor disponÃ­vel para o arquivo: {FilePath}", filePath);
-            return null;
-        }
-
-        var fileHash = await ComputeSha256Async(filePath, cancellationToken);
-
         var batchId = await _batchRepository.CreateBatchAsync(
             sourceName: "local_file",
             sourceType: "spreadsheet",
             fileName: Path.GetFileName(filePath),
-            fileHash: fileHash,
+            fileHash: await ComputeSha256Async(filePath, cancellationToken),
             createdByUserId: null,
             notes: null,
             cancellationToken: cancellationToken);
 
+        var rowNumber = 0;
         var successRows = 0;
         var errorRows = 0;
 
         try
         {
-            var rows = await reader.ReadAsync(filePath, cancellationToken);
-
-            foreach (var row in rows)
+            foreach (var line in await File.ReadAllLinesAsync(filePath, cancellationToken))
             {
+                rowNumber++;
+
                 try
                 {
+                    var payload = System.Text.Json.JsonSerializer.Serialize(new { raw = line });
+
                     await _rowRepository.CreateImportRowAsync(
                         batchId,
-                        row.RowNumber,
-                        row.ExternalRowKey,
-                        row.RawPayloadJson,
+                        rowNumber,
+                        null,
+                        payload,
                         cancellationToken);
 
                     successRows++;
@@ -108,36 +95,24 @@ public class FileImportService : IFileImportService
                 catch (Exception ex)
                 {
                     errorRows++;
-                    _logger.LogError(ex, "Erro ao persistir a linha {RowNumber} do arquivo {FilePath}", row.RowNumber, filePath);
+                    _logger.LogError(ex, "Erro ao gravar linha crua {RowNumber} do arquivo {FilePath}", rowNumber, filePath);
                 }
             }
 
-            var totalRows = successRows + errorRows;
-            var status = errorRows > 0 ? "processed_with_errors" : "processed";
-
             await _batchRepository.SetBatchStatusAsync(
                 batchId,
-                status,
-                totalRows,
-                totalRows,
+                errorRows > 0 ? "processed_with_errors" : "processed",
+                successRows + errorRows,
+                successRows + errorRows,
                 successRows,
                 errorRows,
                 null,
                 cancellationToken);
 
-            _logger.LogInformation(
-                "Arquivo importado. BatchId: {BatchId}, TotalRows: {TotalRows}, SuccessRows: {SuccessRows}, ErrorRows: {ErrorRows}",
-                batchId,
-                totalRows,
-                successRows,
-                errorRows);
-
             return batchId;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Falha geral ao importar o arquivo {FilePath}", filePath);
-
             await _batchRepository.SetBatchStatusAsync(
                 batchId,
                 "failed",

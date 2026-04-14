@@ -19,14 +19,16 @@ builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IEtlBatchRepository, EtlBatchRepository>();
 builder.Services.AddScoped<IEtlRowRepository, EtlRowRepository>();
 builder.Services.AddScoped<IEtlProcessingRunRepository, EtlProcessingRunRepository>();
+builder.Services.AddScoped<IEtlServicePaymentFactRepository, EtlServicePaymentFactRepository>();
+builder.Services.AddScoped<IEtlPetCandidateRepository, EtlPetCandidateRepository>();
 
 builder.Services.AddScoped<IFileImportService, FileImportService>();
 builder.Services.AddScoped<IRowParserService, RowParserService>();
 builder.Services.AddScoped<IRowMatchingService, RowMatchingService>();
 builder.Services.AddScoped<ILoyaltyEventGenerationService, LoyaltyEventGenerationService>();
 
-builder.Services.AddScoped<IRawFileReader, CsvRawFileReader>();
-builder.Services.AddScoped<IRawFileReader, ExcelRawFileReader>();
+builder.Services.AddScoped<IHotelWorkbookReader, HotelWorkbookReader>();
+builder.Services.AddScoped<ICrecheWorkbookReader, CrecheWorkbookReader>();
 
 builder.Services.AddScoped<FileIngestionJob>();
 builder.Services.AddScoped<RowParsingJob>();

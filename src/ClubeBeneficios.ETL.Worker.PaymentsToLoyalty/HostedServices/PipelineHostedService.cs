@@ -1,12 +1,6 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application.Interfaces;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.Configuration;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.Jobs;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.HostedServices;

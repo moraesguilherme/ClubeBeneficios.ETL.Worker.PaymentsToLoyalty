@@ -14,7 +14,7 @@ public class RowMatchingService : IRowMatchingService
 
     public Task<int> MatchParsedRowsAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("RowMatchingService executado.");
+        _logger.LogInformation("RowMatchingService executado. Matching detalhado ficarÃ¡ na prÃ³xima etapa.");
         return Task.FromResult(0);
     }
 }

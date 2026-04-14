@@ -22,7 +22,10 @@ public class EtlBatchRepository : RepositoryBase, IEtlBatchRepository
     {
         using var connection = await OpenConnectionAsync(cancellationToken);
 
+        var id = Guid.NewGuid();
+
         var parameters = new DynamicParameters();
+        parameters.Add("@Id", id);
         parameters.Add("@SourceName", sourceName);
         parameters.Add("@SourceType", sourceType);
         parameters.Add("@FileName", fileName);
@@ -30,12 +33,14 @@ public class EtlBatchRepository : RepositoryBase, IEtlBatchRepository
         parameters.Add("@CreatedByUserId", createdByUserId);
         parameters.Add("@Notes", notes);
 
-        return await connection.ExecuteScalarAsync<Guid>(
+        await connection.ExecuteAsync(
             new CommandDefinition(
                 "dbo.usp_etl_import_batch_create",
                 parameters,
                 commandType: CommandType.StoredProcedure,
                 cancellationToken: cancellationToken));
+
+        return id;
     }
 
     public async Task SetBatchStatusAsync(
