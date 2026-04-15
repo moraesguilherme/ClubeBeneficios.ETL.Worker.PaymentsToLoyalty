@@ -23,7 +23,6 @@ public class EtlBatchRepository : RepositoryBase, IEtlBatchRepository
         using var connection = await OpenConnectionAsync(cancellationToken);
 
         var id = Guid.NewGuid();
-        var startedAt = DateTime.UtcNow;
 
         var parameters = new DynamicParameters();
         parameters.Add("@Id", id);
@@ -31,7 +30,6 @@ public class EtlBatchRepository : RepositoryBase, IEtlBatchRepository
         parameters.Add("@SourceType", sourceType);
         parameters.Add("@FileName", fileName);
         parameters.Add("@FileHash", fileHash);
-        parameters.Add("@StartedAt", startedAt);
         parameters.Add("@CreatedByUserId", createdByUserId);
         parameters.Add("@Notes", notes);
 
@@ -48,16 +46,22 @@ public class EtlBatchRepository : RepositoryBase, IEtlBatchRepository
     public async Task SetBatchStatusAsync(
         Guid batchId,
         string status,
-        DateTime? finishedAt,
+        int totalRows,
+        int processedRows,
+        int successRows,
+        int errorRows,
         string? notes,
         CancellationToken cancellationToken)
     {
         using var connection = await OpenConnectionAsync(cancellationToken);
 
         var parameters = new DynamicParameters();
-        parameters.Add("@BatchId", batchId);
+        parameters.Add("@Id", batchId);
         parameters.Add("@Status", status);
-        parameters.Add("@FinishedAt", finishedAt);
+        parameters.Add("@TotalRows", totalRows);
+        parameters.Add("@ProcessedRows", processedRows);
+        parameters.Add("@SuccessRows", successRows);
+        parameters.Add("@ErrorRows", errorRows);
         parameters.Add("@Notes", notes);
 
         await connection.ExecuteAsync(

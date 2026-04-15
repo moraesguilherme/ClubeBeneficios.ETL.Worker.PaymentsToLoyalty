@@ -14,7 +14,10 @@ public interface IEtlBatchRepository
     Task SetBatchStatusAsync(
         Guid batchId,
         string status,
-        DateTime? finishedAt,
+        int totalRows,
+        int processedRows,
+        int successRows,
+        int errorRows,
         string? notes,
         CancellationToken cancellationToken);
 }

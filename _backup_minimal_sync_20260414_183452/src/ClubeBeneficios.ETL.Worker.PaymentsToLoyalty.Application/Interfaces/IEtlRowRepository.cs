@@ -1,10 +1,11 @@
-using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application.Dtos;
-
 namespace ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application.Interfaces;
 
 public interface IEtlRowRepository
 {
     Task<long> CreateImportRowAsync(
-        ImportRowCreateDto dto,
+        Guid batchId,
+        int rowNumber,
+        string? externalRowKey,
+        string rawPayloadJson,
         CancellationToken cancellationToken);
 }

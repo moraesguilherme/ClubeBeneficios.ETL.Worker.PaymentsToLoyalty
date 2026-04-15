@@ -14,13 +14,13 @@ public class LoyaltyEventGenerationService : ILoyaltyEventGenerationService
 
     public Task<int> GenerateEventsAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("LoyaltyEventGenerationService fora do escopo atual da ETL.");
+        _logger.LogInformation("LoyaltyEventGenerationService executado. GeraÃ§Ã£o de eventos ficarÃ¡ na prÃ³xima etapa.");
         return Task.FromResult(0);
     }
 
     public Task RunMaintenanceAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Maintenance fora do escopo atual da ETL.");
+        _logger.LogInformation("Rotina de manutenÃ§Ã£o executada.");
         return Task.CompletedTask;
     }
 }

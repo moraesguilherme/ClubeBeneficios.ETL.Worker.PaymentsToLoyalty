@@ -1,3 +1,4 @@
+using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Application.Interfaces;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.Configuration;
 using ClubeBeneficios.ETL.Worker.PaymentsToLoyalty.Infrastructure.Jobs;
 using Microsoft.Extensions.Options;
@@ -28,8 +29,18 @@ public class PipelineHostedService : BackgroundService
         {
             using var scope = _serviceProvider.CreateScope();
 
-            var ingestionJob = scope.ServiceProvider.GetRequiredService<FileIngestionJob>();
-            await ingestionJob.ExecuteAsync(stoppingToken);
+            if (string.Equals(_options.Mode, "watch", StringComparison.OrdinalIgnoreCase))
+            {
+                var ingestionJob = scope.ServiceProvider.GetRequiredService<FileIngestionJob>();
+                await ingestionJob.ExecuteAsync(stoppingToken);
+            }
+            else if (
+                string.Equals(_options.Mode, "import-file", StringComparison.OrdinalIgnoreCase) &&
+                !string.IsNullOrWhiteSpace(_options.FilePath))
+            {
+                var importService = scope.ServiceProvider.GetRequiredService<IFileImportService>();
+                await importService.ImportFileAsync(_options.FilePath!, stoppingToken);
+            }
 
             if (_options.EnableParsingJob)
             {
